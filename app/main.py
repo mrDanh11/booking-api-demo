@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.routers.booking_router import router as booking_router
+from app.routers.office_router import router as office_router
 
 app = FastAPI(
     title="Shipping Booking Information API",
@@ -9,6 +10,7 @@ app = FastAPI(
 )
 
 app.include_router(booking_router)
+app.include_router(office_router)
 
 @app.get("/")
 async def read_root():

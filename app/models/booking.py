@@ -10,6 +10,7 @@ from app.db.base import Base
 
 if TYPE_CHECKING:
     from app.models.container import Container
+    from app.models.office import Office
     from app.models.voyage import Voyage
 
 
@@ -21,6 +22,7 @@ class Booking(Base):
     voyage_id: Mapped[int] = mapped_column(ForeignKey("voyages.voyage_id"), nullable=False)
     booking_status: Mapped[str] = mapped_column(String(20), nullable=False)
     cargo_description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    handling_office: Mapped[Optional[str]] = mapped_column(ForeignKey("offices.office_code"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         nullable=False,
@@ -39,3 +41,4 @@ class Booking(Base):
         cascade="all, delete-orphan",
         order_by="Container.container_no",
     )
+    office: Mapped[Optional["Office"]] = relationship(back_populates="bookings")
