@@ -46,16 +46,21 @@ This starts both `db` and `app`. The API will be reachable at `http://localhost:
 
 Migrations define the schema; the SQL files under `seed_data/` provide sample rows for manual verification.
 
-```bash
-# 1. Apply migrations (creates all tables)
-docker compose exec app alembic upgrade head
+**From inside the Dev Container's integrated terminal** (or after `docker compose exec app bash`), you're already in the `app` container, and `psql` is pre-configured (via `PGHOST`/`PGUSER`/`PGPASSWORD`/`PGDATABASE`) to reach `db` without prompting:
 
-# 2. Load sample data (safe to re-run)
-docker compose exec -T db psql -U postgres -d booking_api < seed_data/seed_booking_api.sql
-docker compose exec -T db psql -U postgres -d booking_api < seed_data/seed_booking_workload.sql
+```bash
+alembic upgrade head
+psql -f seed_data/seed_booking_api.sql
+psql -f seed_data/seed_booking_workload.sql
 ```
 
-If you're working inside the Dev Container's integrated terminal instead, drop `docker compose exec app` and just run `alembic upgrade head` directly (you're already inside the `app` container).
+**From the host machine** (Option B, no VS Code), prefix each command with `docker compose exec`:
+
+```bash
+docker compose exec app alembic upgrade head
+docker compose exec -T app psql -f seed_data/seed_booking_api.sql
+docker compose exec -T app psql -f seed_data/seed_booking_workload.sql
+```
 
 ## Run the application
 

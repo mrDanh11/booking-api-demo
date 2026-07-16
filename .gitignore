@@ -9,3 +9,6 @@ wheels/
 # Virtual environments
 .venv
 .env
+
+# Local Claude Code tool config (not part of the project deliverable)
+.claude/
