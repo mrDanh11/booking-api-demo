@@ -4,18 +4,34 @@ services:
     container_name: booking-api-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: booking_api
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "123456"
+      POSTGRES_DB: ${POSTGRES_DB:-booking_api}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123456}
     ports:
       - "5498:5432"
     volumes:
       - booking_api_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d booking_api"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-booking_api}"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+  app:
+    container_name: booking-api-app
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-123456}@db:5432/${POSTGRES_DB:-booking_api}
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/workspace
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   booking_api_pgdata:

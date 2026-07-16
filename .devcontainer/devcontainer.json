@@ -1,0 +1,33 @@
+{
+  "name": "shipping-booking-api",
+  "dockerComposeFile": ["../docker-compose.yaml"],
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "ms-azuretools.vscode-docker",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  },
+
+  "postCreateCommand": "uv sync --frozen",
+
+  "forwardPorts": [8000, 5498],
+  "portsAttributes": {
+    "8000": { "label": "FastAPI app" },
+    "5498": { "label": "PostgreSQL" }
+  },
+
+  "remoteUser": "root"
+}
